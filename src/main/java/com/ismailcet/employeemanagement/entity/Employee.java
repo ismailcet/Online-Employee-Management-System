@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
@@ -19,7 +20,9 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "employee")
-public class Employee implements UserDetails {
+public class Employee implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "id")
@@ -38,7 +41,7 @@ public class Employee implements UserDetails {
     @Column(name = "password")
     @NotNull
     private String password;
-
+    /*
     @Column(name = "age")
     private Integer age;
 
@@ -47,11 +50,10 @@ public class Employee implements UserDetails {
 
     @Column(name = "phone")
     private String phone;
-
-    @Enumerated(EnumType.STRING)
+    */
     @Column(name = "type")
-    private Role role;
-
+    private String role = "EMPLOYEE";
+    /*
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "department",
@@ -67,35 +69,6 @@ public class Employee implements UserDetails {
             nullable = false
     )
     private Position position;
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
-    }
-
-    @Override
-    public String getUsername() {
-        return tc;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
+    */
 }
 
