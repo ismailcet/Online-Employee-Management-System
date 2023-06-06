@@ -30,7 +30,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(request.getServletPath().matches("/api/v1/employee/login|/api/v1/employee/register")){
+        if(request.getServletPath().matches("/api/v1/employee/login")){
             filterChain.doFilter(request, response);
         }else{
             String authorizationHeader = request.getHeader("Authorization");
@@ -56,13 +56,13 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     public boolean isSupervisor(){
-        return "SUPERVISOR".equalsIgnoreCase((String) claims.get("type"));
+        return "SUPERVISOR".equalsIgnoreCase((String) claims.get("Role"));
     }
     public boolean isManager(){
-        return "MANAGER".equalsIgnoreCase((String) claims.get("type"));
+        return "MANAGER".equalsIgnoreCase((String) claims.get("Role"));
     }
-    public boolean isEMPLOYEE(){
-        return "EMPLOYEE".equalsIgnoreCase((String) claims.get("type"));
+    public boolean isEmployee(){
+        return "EMPLOYEE".equalsIgnoreCase((String) claims.get("Role"));
     }
 
     public String getCurrentEmployee(){

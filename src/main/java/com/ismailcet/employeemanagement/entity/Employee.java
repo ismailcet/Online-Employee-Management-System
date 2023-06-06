@@ -41,7 +41,7 @@ public class Employee implements Serializable {
     @Column(name = "password")
     @NotNull
     private String password;
-    /*
+
     @Column(name = "age")
     private Integer age;
 
@@ -50,10 +50,10 @@ public class Employee implements Serializable {
 
     @Column(name = "phone")
     private String phone;
-    */
+
     @Column(name = "type")
-    private String role = "EMPLOYEE";
-    /*
+    private String type = "EMPLOYEE";
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "department",
@@ -69,6 +69,5 @@ public class Employee implements Serializable {
             nullable = false
     )
     private Position position;
-    */
 }
 

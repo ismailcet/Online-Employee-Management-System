@@ -1,4 +1,4 @@
-package com.ismailcet.employeemanagement.dto.request;
+package com.ismailcet.employeemanagement.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,15 +9,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateEmployeeRequest {
-    private String tc;
+public class EmployeeDto {
     private String name;
     private String surname;
-    private String password;
+    private String tc;
     private Integer age;
     private Double salary;
     private String phone;
     private String type;
-    private Integer departmentId;
-    private Integer positionId;
+    private String departmentName;
+    private String positionName;
+
 }

@@ -9,15 +9,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateEmployeeRequest {
-    private String tc;
+public class UpdateEmployeeRequest {
+
     private String name;
     private String surname;
-    private String password;
     private Integer age;
     private Double salary;
     private String phone;
-    private String type;
     private Integer departmentId;
     private Integer positionId;
 }
