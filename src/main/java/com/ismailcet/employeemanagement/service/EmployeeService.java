@@ -18,12 +18,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -38,8 +37,10 @@ public class EmployeeService {
     private final DepartmentRepository departmentRepository;
     private final PositionRepository positionRepository;
     private final EmployeeDtoConverter employeeDtoConverter;
+    private final EmailSenderService emailSenderService;
 
-    public EmployeeService(EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, EmployeeDetailsService employeeDetailsService, JwtUtil jwtUtil, JwtFilter jwtFilter, DepartmentRepository departmentRepository, PositionRepository positionRepository, EmployeeDtoConverter employeeDtoConverter) {
+
+    public EmployeeService(EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, EmployeeDetailsService employeeDetailsService, JwtUtil jwtUtil, JwtFilter jwtFilter, DepartmentRepository departmentRepository, PositionRepository positionRepository, EmployeeDtoConverter employeeDtoConverter, EmailSenderService emailSenderService) {
         this.employeeRepository = employeeRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
@@ -49,6 +50,7 @@ public class EmployeeService {
         this.departmentRepository = departmentRepository;
         this.positionRepository = positionRepository;
         this.employeeDtoConverter = employeeDtoConverter;
+        this.emailSenderService = emailSenderService;
     }
 
     public String createEmployee(CreateEmployeeRequest createEmployeeRequest) {
@@ -127,7 +129,7 @@ public class EmployeeService {
                     new UsernamePasswordAuthenticationToken(loginEmployeeRequest.getTc(), loginEmployeeRequest.getPassword())
             );
             if(auth.isAuthenticated()){
-                return "Token : " + jwtUtil.generateToken(employeeDetailsService.getEmployeeDetail().getTc(),
+                return jwtUtil.generateToken(employeeDetailsService.getEmployeeDetail().getTc(),
                         employeeDetailsService.getEmployeeDetail().getType().toString());
             }else{
                 throw new EmployeeNotFoundException("Something went wrong");
@@ -276,6 +278,55 @@ public class EmployeeService {
                 return "Employee Role is successfully changed ! ";
             }else{
                 throw new AuthenticationNotFoundException("Unauthenticated Access ! ");
+            }
+        }catch (Exception ex){
+            throw ex;
+        }
+    }
+
+    public Map<String, String> forgotPasswordCreateResetPasswordToken(CreateResetPasswordTokenRequest createResetPasswordTokenRequest) {
+        try{
+            Employee employee =
+                    employeeRepository.findByTc(createResetPasswordTokenRequest.getTc());
+            if(!Objects.isNull(employee)){
+                Integer token = 10000+new Random(System.currentTimeMillis()).nextInt(20000);
+
+                employee.setResetPasswordToken(String.valueOf(token));
+                String subject = "Password Reset Token : " + String.valueOf(token);
+                Map<String, String> response = new HashMap<>();
+
+                response.put("token",BCrypt.hashpw(String.valueOf(token),BCrypt.gensalt(10)));
+                response.put("tc",employee.getTc());
+
+                employeeRepository.save(employee);
+                emailSenderService.sendEmail(employee.getEmail(),subject,"Email Reset Code");
+
+                return response;
+            }else{
+                throw new EmployeeNotFoundException("Employee is not valid !");
+            }
+        }catch (Exception ex){
+            throw ex;
+        }
+    }
+
+    public String changePasswordWithResetToken(ChangePasswordWithToken changePasswordWithToken) {
+        try{
+            Employee employee  =
+                    employeeRepository.findByTc(changePasswordWithToken.getTc());
+            if(!Objects.isNull(employee)){
+                if(employee.getResetPasswordToken().equals(changePasswordWithToken.getToken())){
+                    employee.setPassword(passwordEncoder.encode(changePasswordWithToken.getPassword()));
+                    employee.setResetPasswordToken(null);
+
+                    employeeRepository.save(employee);
+
+                    return "Password is changed successfully";
+                }else{
+                    throw new EmployeeNotFoundException("Reset Token is not correct ! ");
+                }
+            }else{
+                throw new EmployeeNotFoundException("Employee is not valid !");
             }
         }catch (Exception ex){
             throw ex;

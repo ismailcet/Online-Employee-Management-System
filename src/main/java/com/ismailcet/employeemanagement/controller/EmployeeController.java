@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/employee")
@@ -17,12 +18,10 @@ public class EmployeeController {
 
 
     private final EmployeeService employeeService;
-    private final EmailSenderService emailSenderService;
 
-    public EmployeeController(EmployeeService employeeService, EmailSenderService emailSenderService) {
-        this.employeeService = employeeService;
-        this.emailSenderService = emailSenderService;
-    }
+
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;}
 
 
     @PostMapping("/login")
@@ -72,10 +71,15 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeService.changeEmployeeRoleByEmployeeId(changeRoleRequest,id));
     }
     @PostMapping("/forgotPassword")
-    public void emailTest(@RequestBody CreateDepartmentRequest createDepartmentRequest){
-        String subject = "Deneme Mail";
-        String body = "Bu Mail Javadan edaya gönderilmiştir";
-        emailSenderService.sendEmail(createDepartmentRequest.getName(),subject,body);
-
+    public ResponseEntity<Map<String, String>> forgotPasswordCreateResetPasswordToken(@RequestBody CreateResetPasswordTokenRequest createResetPasswordTokenRequest){
+        return ResponseEntity.ok(
+                employeeService.forgotPasswordCreateResetPasswordToken(createResetPasswordTokenRequest)
+        );
+    }
+    @PostMapping("/change/password")
+    public ResponseEntity<String> changePasswordWithResetToken(@RequestBody ChangePasswordWithToken changePasswordWithToken){
+        return ResponseEntity.ok(
+                employeeService.changePasswordWithResetToken(changePasswordWithToken)
+        );
     }
 }
