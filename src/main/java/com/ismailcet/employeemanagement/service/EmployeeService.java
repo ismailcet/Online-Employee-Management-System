@@ -3,12 +3,9 @@ package com.ismailcet.employeemanagement.service;
 import com.ismailcet.employeemanagement.JWT.EmployeeDetailsService;
 import com.ismailcet.employeemanagement.JWT.JwtFilter;
 import com.ismailcet.employeemanagement.JWT.JwtUtil;
-import com.ismailcet.employeemanagement.dto.request.UpdateEmployeeRequest;
+import com.ismailcet.employeemanagement.dto.request.*;
 import com.ismailcet.employeemanagement.dto.EmployeeDto;
 import com.ismailcet.employeemanagement.dto.converter.EmployeeDtoConverter;
-import com.ismailcet.employeemanagement.dto.request.ChangePasswordRequest;
-import com.ismailcet.employeemanagement.dto.request.CreateEmployeeRequest;
-import com.ismailcet.employeemanagement.dto.request.LoginEmployeeRequest;
 import com.ismailcet.employeemanagement.entity.Department;
 import com.ismailcet.employeemanagement.entity.Employee;
 import com.ismailcet.employeemanagement.entity.Position;
@@ -68,6 +65,7 @@ public class EmployeeService {
                             .surname(createEmployeeRequest.getSurname())
                             .type(createEmployeeRequest.getType())
                             .tc(createEmployeeRequest.getTc())
+                            .email(createEmployeeRequest.getEmail())
                             .phone(createEmployeeRequest.getPhone())
                             .age(createEmployeeRequest.getAge())
                             .salary(createEmployeeRequest.getSalary())
@@ -102,6 +100,7 @@ public class EmployeeService {
                             .surname(createEmployeeRequest.getSurname())
                             .type(createEmployeeRequest.getType())
                             .tc(createEmployeeRequest.getTc())
+                            .email(createEmployeeRequest.getEmail())
                             .phone(createEmployeeRequest.getPhone())
                             .age(createEmployeeRequest.getAge())
                             .salary(createEmployeeRequest.getSalary())
@@ -145,18 +144,7 @@ public class EmployeeService {
                 employeeRepository.findByTc(employeeTc);
 
         if(!Objects.isNull(current)){
-            EmployeeDto response = EmployeeDto.builder()
-                    .name(current.getName())
-                    .surname(current.getSurname())
-                    .tc(current.getTc())
-                    .type(current.getType())
-                    .age(current.getAge())
-                    .salary(current.getSalary())
-                    .phone(current.getPhone())
-                    .departmentName(current.getDepartment().getName())
-                    .positionName(current.getPosition().getName())
-                    .build();
-            return response;
+            return employeeDtoConverter.convert(current);
         }
         throw new EmployeeNotFoundException("Employee Not Found ! ");
     }
@@ -183,17 +171,7 @@ public class EmployeeService {
             if(jwtFilter.isManager() || jwtFilter.isSupervisor()){
                 List<EmployeeDto> employees = employeeRepository.findAll()
                         .stream()
-                        .map( e -> EmployeeDto.builder()
-                                .name(e.getName())
-                                .surname(e.getSurname())
-                                .tc(e.getTc())
-                                .type(e.getType())
-                                .age(e.getAge())
-                                .salary(e.getSalary())
-                                .phone(e.getPhone())
-                                .departmentName(e.getDepartment().getName())
-                                .positionName(e.getPosition().getName())
-                                .build())
+                        .map(employeeDtoConverter::convert)
                         .collect(Collectors.toList());
                 return employees;
             }else{
@@ -215,6 +193,7 @@ public class EmployeeService {
                             .surname(employee.get().getSurname())
                             .tc(employee.get().getTc())
                             .type(employee.get().getType())
+                            .email(employee.get().getEmail())
                             .age(employee.get().getAge())
                             .salary(employee.get().getSalary())
                             .phone(employee.get().getPhone())
@@ -249,6 +228,7 @@ public class EmployeeService {
                             .id(employee.get().getId())
                             .tc(employee.get().getTc())
                             .password(employee.get().getPassword())
+                            .email(employee.get().getEmail())
                             .name(updateEmployeeRequest.getName())
                             .surname(updateEmployeeRequest.getSurname())
                             .phone(updateEmployeeRequest.getPhone())
@@ -286,12 +266,12 @@ public class EmployeeService {
         }
     }
 
-    public String changeEmployeeRoleByEmployeeId(String role,Integer id) {
+    public String changeEmployeeRoleByEmployeeId(ChangeRoleRequest changeRoleRequest, Integer id) {
         try{
             Employee employee =
                     employeeRepository.findById(id).orElseThrow(()-> new EmployeeNotFoundException("Employee Id does not valid ! "));
             if(jwtFilter.isSupervisor()){
-                employee.setType(role);
+                employee.setType(changeRoleRequest.getType());
                 employeeRepository.save(employee);
                 return "Employee Role is successfully changed ! ";
             }else{

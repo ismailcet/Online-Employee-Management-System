@@ -21,7 +21,7 @@ public class DepartmentController {
         this.departmentService = departmentService;
     }
 
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<DepartmentDto> createPosition(@RequestBody CreateDepartmentRequest createDepartmentRequest){
         return new ResponseEntity<>(
                 departmentService.createPosition(createDepartmentRequest),
@@ -33,7 +33,7 @@ public class DepartmentController {
     public ResponseEntity<DepartmentDto> updatePositionById(@RequestBody CreateDepartmentRequest createDepartmentRequest, @PathVariable Integer id){
         return ResponseEntity.ok(departmentService.updatePositionById(createDepartmentRequest, id));
     }
-    @GetMapping("/")
+    @GetMapping()
     public ResponseEntity<List<DepartmentDto>> getAllPosition(){
         return ResponseEntity.ok(departmentService.getAllPosition());
     }

@@ -31,6 +31,8 @@ public class Employee implements Serializable {
 
     @Column(name = "tc",unique = true)
     private String tc;
+    @Column(name = "email",unique = true)
+    private String email;
 
     @Column(name = "name")
     private String name;
@@ -69,5 +71,8 @@ public class Employee implements Serializable {
             nullable = false
     )
     private Position position;
+
+    @Column(name = "resetPasswordToken",nullable = true)
+    private String resetPasswordToken;
 }
 

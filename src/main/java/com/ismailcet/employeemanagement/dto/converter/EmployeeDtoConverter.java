@@ -13,6 +13,7 @@ public class EmployeeDtoConverter {
                 .name(employee.getName())
                 .surname(employee.getSurname())
                 .tc(employee.getTc())
+                .email(employee.getEmail())
                 .age(employee.getAge())
                 .salary(employee.getSalary())
                 .phone(employee.getPhone())

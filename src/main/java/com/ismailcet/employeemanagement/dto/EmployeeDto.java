@@ -13,6 +13,7 @@ public class EmployeeDto {
     private String name;
     private String surname;
     private String tc;
+    private String email;
     private Integer age;
     private Double salary;
     private String phone;

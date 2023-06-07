@@ -19,7 +19,7 @@ public class PositionController {
         this.positionService = positionService;
     }
 
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<PositionDto> createPosition(@RequestBody CreatePositionRequest createPositionRequest){
         return new ResponseEntity<>(
                 positionService.createPosition(createPositionRequest),
@@ -31,7 +31,7 @@ public class PositionController {
     public ResponseEntity<PositionDto> updatePositionById(@RequestBody CreatePositionRequest createPositionRequest, @PathVariable Integer id){
         return ResponseEntity.ok(positionService.updatePositionById(createPositionRequest, id));
     }
-    @GetMapping("/")
+    @GetMapping()
     public ResponseEntity<List<PositionDto>> getAllPosition(){
         return ResponseEntity.ok(positionService.getAllPosition());
     }

@@ -14,6 +14,7 @@ public class CreateEmployeeRequest {
     private String name;
     private String surname;
     private String password;
+    private String email;
     private Integer age;
     private Double salary;
     private String phone;

@@ -1,10 +1,8 @@
 package com.ismailcet.employeemanagement.controller;
 
 import com.ismailcet.employeemanagement.dto.EmployeeDto;
-import com.ismailcet.employeemanagement.dto.request.ChangePasswordRequest;
-import com.ismailcet.employeemanagement.dto.request.CreateEmployeeRequest;
-import com.ismailcet.employeemanagement.dto.request.LoginEmployeeRequest;
-import com.ismailcet.employeemanagement.dto.request.UpdateEmployeeRequest;
+import com.ismailcet.employeemanagement.dto.request.*;
+import com.ismailcet.employeemanagement.service.EmailSenderService;
 import com.ismailcet.employeemanagement.service.EmployeeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +17,11 @@ public class EmployeeController {
 
 
     private final EmployeeService employeeService;
+    private final EmailSenderService emailSenderService;
 
-    public EmployeeController(EmployeeService employeeService) {
+    public EmployeeController(EmployeeService employeeService, EmailSenderService emailSenderService) {
         this.employeeService = employeeService;
+        this.emailSenderService = emailSenderService;
     }
 
 
@@ -68,7 +68,14 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeService.changePassword(changePasswordRequest, id));
     }
     @PutMapping("/update/change/type/{id}")
-    public ResponseEntity<String> changeEmployeeRoleByEmployeeId(@RequestBody String role,@PathVariable Integer id){
-        return ResponseEntity.ok(employeeService.changeEmployeeRoleByEmployeeId(role,id));
+    public ResponseEntity<String> changeEmployeeRoleByEmployeeId(@RequestBody ChangeRoleRequest changeRoleRequest, @PathVariable Integer id){
+        return ResponseEntity.ok(employeeService.changeEmployeeRoleByEmployeeId(changeRoleRequest,id));
+    }
+    @PostMapping("/forgotPassword")
+    public void emailTest(@RequestBody CreateDepartmentRequest createDepartmentRequest){
+        String subject = "Deneme Mail";
+        String body = "Bu Mail Javadan edaya gönderilmiştir";
+        emailSenderService.sendEmail(createDepartmentRequest.getName(),subject,body);
+
     }
 }

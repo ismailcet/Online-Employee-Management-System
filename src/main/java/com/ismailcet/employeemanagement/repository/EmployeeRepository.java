@@ -19,4 +19,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
             nativeQuery = true
     )
     Employee findByTcNumber(String tc);
+
+    Employee findByResetPasswordToken(String token);
 }

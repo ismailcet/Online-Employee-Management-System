@@ -59,7 +59,7 @@ public class PositionService {
 
     public List<PositionDto> getAllPosition() {
         try{
-            if(jwtFilter.isManager()){
+            if(jwtFilter.isManager() || jwtFilter.isSupervisor()){
                 List<PositionDto> positions = positionRepository.findAll()
                         .stream().map(positionDtoConverter::convert)
                         .collect(Collectors.toList());
@@ -77,7 +77,7 @@ public class PositionService {
             Position position = positionRepository.findById(id)
                             .orElseThrow(()-> new PositionNotFoundException("Position Id does not valid ! "));
 
-            if(jwtFilter.isManager()){
+            if(jwtFilter.isManager() || jwtFilter.isSupervisor()){
                 return positionDtoConverter.convert(position);
             }else{
                 throw new AuthenticationNotFoundException("Unauthenticated Access ! ");
