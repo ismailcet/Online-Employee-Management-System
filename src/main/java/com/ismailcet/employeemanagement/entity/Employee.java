@@ -28,34 +28,25 @@ public class Employee implements Serializable {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     @Column(name = "tc",unique = true)
     private String tc;
     @Column(name = "email",unique = true)
     private String email;
-
     @Column(name = "name")
     private String name;
-
     @Column(name = "surname")
     private String surname;
-
     @Column(name = "password")
     @NotNull
     private String password;
-
     @Column(name = "age")
     private Integer age;
-
     @Column(name = "salary")
     private Double salary;
-
     @Column(name = "phone")
     private String phone;
-
     @Column(name = "type")
     private String type = "EMPLOYEE";
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "department",
@@ -63,7 +54,6 @@ public class Employee implements Serializable {
             nullable = false
     )
     private Department department;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "position",
