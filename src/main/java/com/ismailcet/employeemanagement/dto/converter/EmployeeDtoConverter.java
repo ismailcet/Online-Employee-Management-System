@@ -10,6 +10,7 @@ public class EmployeeDtoConverter {
 
     public EmployeeDto convert(Employee employee){
         return EmployeeDto.builder()
+                .id(employee.getId())
                 .name(employee.getName())
                 .surname(employee.getSurname())
                 .tc(employee.getTc())

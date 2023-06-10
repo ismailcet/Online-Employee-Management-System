@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/v1/employee")
 public class EmployeeController {
 
@@ -57,6 +58,10 @@ public class EmployeeController {
     @GetMapping("/get/{id}")
     public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable Integer id){
         return ResponseEntity.ok(employeeService.getEmployeeById(id));
+    }
+    @GetMapping("getTc/{tc}")
+    public ResponseEntity<EmployeeDto> getEmployeeByTc(@PathVariable String tc){
+        return ResponseEntity.ok(employeeService.getEmployeeByTc(tc));
     }
     @PutMapping("/update/{id}")
     public ResponseEntity<EmployeeDto> updateEmployeeById(@RequestBody UpdateEmployeeRequest updateEmployeeRequest, @PathVariable Integer id){

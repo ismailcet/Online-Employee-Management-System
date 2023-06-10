@@ -213,7 +213,35 @@ public class EmployeeService {
             throw ex;
         }
     }
-
+    public EmployeeDto getEmployeeByTc(String tc) {
+        try{
+            Employee employee =
+                    employeeRepository.findByTc(tc);
+            if(!Objects.isNull(employee)){
+                if(jwtFilter.isManager() || jwtFilter.isSupervisor() || employee.getTc().equals(jwtFilter.getCurrentEmployee())){
+                    EmployeeDto response = EmployeeDto.builder()
+                            .name(employee.getName())
+                            .surname(employee.getSurname())
+                            .tc(employee.getTc())
+                            .type(employee.getType())
+                            .email(employee.getEmail())
+                            .age(employee.getAge())
+                            .salary(employee.getSalary())
+                            .phone(employee.getPhone())
+                            .departmentName(employee.getDepartment().getName())
+                            .positionName(employee.getPosition().getName())
+                            .build();
+                    return employeeDtoConverter.convert(employee);
+                }else{
+                    throw new AuthenticationNotFoundException("Unauthenticated Access ! ");
+                }
+            }else{
+                throw new EmployeeNotFoundException("Employee Id does not valid ! ");
+            }
+        }catch (Exception ex){
+            throw ex;
+        }
+    }
     public EmployeeDto updateEmployeeById(UpdateEmployeeRequest updateEmployeeRequest, Integer id) {
         try{
             Optional<Employee> employee =
@@ -332,5 +360,6 @@ public class EmployeeService {
             throw ex;
         }
     }
+
 }
 
