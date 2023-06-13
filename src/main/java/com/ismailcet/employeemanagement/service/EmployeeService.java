@@ -55,7 +55,7 @@ public class EmployeeService {
 
     public String createEmployee(CreateEmployeeRequest createEmployeeRequest) {
         try{
-            //if(jwtFilter.isManager()){
+            if(jwtFilter.isManager()){
                 Optional <Department> department =
                         departmentRepository.findById(createEmployeeRequest.getDepartmentId());
                 Optional <Position> position =
@@ -80,10 +80,10 @@ public class EmployeeService {
                 }else{
                     throw new EmployeeNotFoundException("Department Id or Position Id does not valid! ");
                 }
-           // }
-            /*else{
+            }
+            {
                 throw new AuthenticationNotFoundException("Not Authentication ! ");
-            }*/
+            }
         }catch (Exception ex){
             throw new EmployeeNotFoundException(ex.getMessage());
         }
